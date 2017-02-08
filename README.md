@@ -1,6 +1,6 @@
 # Telstra-Kaggle
 
-Feature engineering
+# Feature engineering
 
 As always, feature engineering is the first and the most important step in participating a Kaggle competition. The most important three features are:
 
@@ -11,12 +11,12 @@ The time information, which gives the biggest reduction as ~0.06. It is very cle
 
 There are other features I have tried, and they are all written in get_raw_feat.py. Basically, they are one-hot-encoding, using various summary statistics to reduce one-to-many relationship to one-to-one, and two-way or three-way interaction among multiple variables. I didn't include the one-hot-encoding of location directly as a feature given the number of unique locations is very large. Tree-based classifiers such as Random Forests and Gradient Tree Boosting are not good at handling this huge sparse feature matrix. I encoded this sparse feature matrix by stacking. Specifically, I used Logistic regression to fit the data with this sparse matrix as predictors. The (class) predictions based on the fitted Logistic regression model are used as meta features.
 
-Classifier
+# Classifier
 
 I used Xgboost, which seems to work better than the other classifiers I have tried. The best single model using 10-fold cross-validation averaging gives scores: 0.41351 (Public LB) and 0.41136 (Private LB).
 
 my_xgb = xgb_clf.my_xgb(obj='multi:softprob', eval_metric='mlogloss', num_class=num_class, nthread=20, silent=1, eta=0.02, colsample_bytree=0.6, subsample=0.9, max_depth=8, max_delta_step=1, gamma=0.1, alpha=0, param_lambda=1, n_fold=10, seed=0)
 
-Ensembling
+# Ensembling
 
 I am not experienced in ensembling. So what I did is just averaging Xgboost's with colsample_bytree=0.5, 0.6 and feature sets including time or time_norm or both of them. This final model gives scores: 0.41038 (Public LB) and 0.40742 (Private LB). But unfortunately I didn't choose it as my final submissions since its public score is worse than the other model.
